@@ -1,0 +1,161 @@
+# modules imported...
+import pyttsx3
+import speech_recognition as asap
+from chatterbot import ChatBot
+from chatterbot.trainers import ListTrainer 
+from tkinter import *
+import random
+from PIL import Image, ImageTk
+# chatbot declaration ...
+bot=ChatBot("SID")
+# speech settings ...
+pa=random.randint(0,1)
+engine=pyttsx3.init("sapi5")
+voices=engine.getProperty("voices")
+engine.setProperty("voice",voices[pa].id)
+
+def sayit(audio):
+    engine.say(audio)
+    engine.runAndWait()
+# speech recognizer ...
+def acceptor():
+    t=asap.Recognizer()
+    with asap.Microphone() as source:
+        
+        t.pause_threshold=1.5
+        audio=t.listen(source)
+    try :
+        
+        prob=t.recognize_google(audio,language="en-in")
+        
+    except Exception :
+        
+        return "nothing"
+    return prob
+# sample training data set ...
+conversations=[
+    "hi",
+    "hello",
+    "how are you ",
+    "i am fine",
+    "you want to know my name,i hope i have told you that earlier but again its SID",
+    "nothing i am just helping my masters",
+    "i can sing well ",
+    "i love you too",
+    "i wish , i was a human i would have lived with you",
+    "my master is very kind and light hearted",
+    "i like helping, playing,surfing network and offcourse talking to u",
+    "i live in bareilly",
+    "i dont abuse",
+    "i want to become better day by day",
+    "i like studying maths",
+    "i am a simple version of ai ",
+    "i am just like your friend ",
+    "i am a talented bot and always want to learn ",
+    "what is your name master",
+    "will you be my friend",
+    "there is no comparison of mine here",
+    " i am intially created in a visual studio code and hence edited",
+    "if you ask what all i can do the things are many",
+    "i can play a song",
+    "search something particularly on wikipedia",
+    "open different apps as assigned",
+    "talk to you like i am doing now",
+    "tell you the time","open youtube ",
+    "open facebook ",
+    "much more",
+    "ok",
+    "lol",
+    "rofl",
+    "❤",
+    "fine",
+    "yup",
+    "what comes after a in a to z","and tell u a joke too"
+]
+trainer=ListTrainer(bot)
+trainer.train(conversations)
+
+# GUI execution ...
+ 
+def first():
+    def close():
+        q.destroy()
+        second()
+    q=Tk()
+    q.state('zoomed')
+    q.title("WELCOME TO SID")
+    im=Image.open("w.jpg")
+    photo1=ImageTk.PhotoImage(im, master=q)
+    photo11=Label(q, image=photo1)
+    photo11.pack(pady=5)
+    btn=Button(q,text="Continue",font=("arial",20),command=close)
+    btn.pack()
+    q.mainloop()
+    
+
+def second():
+    
+    am=Tk()
+    am.state('zoomed')
+    am.title("YOUR FRIEND SID")
+    imag=Image.open("REE.jpg")
+    photoe=ImageTk.PhotoImage(imag, master=am)
+    photol=Label(am, image=photoe)
+    photol.pack(pady=5)
+    fram=Frame(am)
+    sc=Scrollbar(fram)
+    messag=Listbox(fram,width=80,height=20)
+    sc.pack(side=RIGHT, fill=Y)
+    messag.pack(side=LEFT, fill=BOTH, pady=10)
+    inp=StringVar()
+    def acce():
+        inpu=inp.get()
+        inp.set("")
+        return inpu
+    def write_to_bot():
+        query=acce()
+        answer_from_bot=bot.get_response(query)
+        sayit(answer_from_bot)
+        messag.insert(END, "you : " + query)
+        messag.insert(END, "bot : " + str(answer_from_bot))
+    def close1():
+        am.destroy()
+        third()
+        
+
+    btn1=Button(am,text="Write🖋️",font=("arial",20),command=write_to_bot)
+    name_entry = Entry(am,textvariable =inp, font=('calibre',20,'normal'))
+    name_entry.pack(pady=5)
+    btn1.pack(pady=5)
+
+    
+    fram.pack()
+
+    def ask_from_bot():
+        query=acceptor()
+        answer_from_bot=bot.get_response(query)
+        sayit(answer_from_bot)
+        messag.insert(END, "you : " + query)
+        messag.insert(END, "bot : " + str(answer_from_bot))
+
+    
+    
+
+    btn=Button(am,text="Speak👂",font=("arial",20),command=ask_from_bot)
+    btn.pack()
+    btn2=Button(am,text="Close❌",font=("arial",20),command=close1)
+    btn2.pack()
+    am.mainloop()
+    
+def third():
+    mm=Tk()
+    mm.geometry("750x100")
+    label =Label(mm, text = 'Thank you for Talking .... Have a nice day', font=('calibre',20, 'bold'))
+    label.pack()
+    mm.mainloop()
+
+
+first()
+
+
+
